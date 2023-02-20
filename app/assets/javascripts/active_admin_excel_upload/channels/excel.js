@@ -12,13 +12,18 @@ App.room = App.cable.subscriptions.create("ActiveAdminExcelUpload::ExcelChannel"
     model = searchParams.get("model");
     modelInMessage = data.match("\\[(\\w+\)]")[1];
     if (model === modelInMessage) {
-      para = document.createElement("P");
-      t = document.createTextNode(data.match("\\[(\\w+\)](.*)")[2]);
-      para.appendChild(t);
-      para.style.borderBottom = "1px solid lightgrey";
-      para.style.margin = "0px";
-      para.style.padding = "10px";
-      return document.getElementById("show_status").appendChild(para);
+      if(data.match("\\<tr>")){
+        table = document.getElementById('burbio-aa-import-header');
+        table.appendChild(data.match("\\[(\\w+\)](.*)")[2]);
+      }else{
+        para = document.createElement("P");
+        t = document.createTextNode(data.match("\\[(\\w+\)](.*)")[2]);
+        para.appendChild(t);
+        para.style.borderBottom = "1px solid lightgrey";
+        para.style.margin = "0px";
+        para.style.padding = "10px";
+        return document.getElementById("show_status").appendChild(para);
+      }
     }
   },
   speak: function() {

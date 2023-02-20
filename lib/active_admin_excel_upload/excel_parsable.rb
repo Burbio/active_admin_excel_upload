@@ -15,12 +15,14 @@ module ActiveAdminExcelUpload
         if record.save
           self.publish_to_channel(channel_name,"Successfully created record for #{row}, id: #{record.id}")
         else
-          # self.publish_to_channel(channel_name,"Could not create record for #{row}, error: #{record.errors.messages}")
+          puts row 
+          puts record.errors.messages
           self.publish_to_channel(channel_name,more_delightful_message(row,record.errors.messages))
         end
       end
 
       def more_delightful_message(row, messages)
+        byebug
         first_message = row.kind_of?(String) ? row : row.try(:[],0)
         error_messages = messages[:error].map{|k,v| "<p>#{k.to_s} #{v.to_s}</p>"}.join("").html_safe
         "<p>Could not create record for row #{first_message}.</p>".html_safe + error_messages
@@ -36,7 +38,7 @@ module ActiveAdminExcelUpload
         header_downcase = header.map(&:parameterize).map(&:underscore)
         log_table_name(self)
         self.publish_to_channel(channel_name,"Start processing sheet #{self.table_name}")
-        self.publish_to_channel(channel_name,"Start processing sheet #{header}")
+        self.publish_to_channel(channel_name,"#{table_header(header)}")
         sheet.parse.each_with_index do |row, index|
           begin
             self.excel_create_record(row,index,header_downcase,channel_name)
@@ -47,38 +49,13 @@ module ActiveAdminExcelUpload
         self.publish_to_channel(channel_name, "End processing sheet #{self.table_name}")
       end
 
-      def table_header
-        %Q[<thead class="border-b">
-            <tr>
-              <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                #
-              </th>
-              <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Heading
-              </th>
-              <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Heading
-              </th>
-              <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Heading
-              </th>
-              <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Heading
-              </th>
-              <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Heading
-              </th>
-              <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Heading
-              </th>
-              <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Heading
-              </th>
-              <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Heading
-              </th>
-            </tr>
-          </thead>]
+      def table_header(headers)
+        column_1 = %Q[<thead class="border-b"><tr><th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">#</th>]
+        headers.each do |header|
+          column_1 << %Q[<th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">#{header}</th>]
+        end
+        column_1 << %Q[</tr></thead>]
+        column_1
       end
 
       def log_table_name(itself)
