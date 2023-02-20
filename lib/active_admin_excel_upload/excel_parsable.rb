@@ -36,6 +36,7 @@ module ActiveAdminExcelUpload
         header_downcase = header.map(&:parameterize).map(&:underscore)
         log_table_name(self)
         self.publish_to_channel(channel_name,"Start processing sheet #{self.table_name}")
+        self.publish_to_channel(channel_name,"Start processing sheet #{header}")
         sheet.parse.each_with_index do |row, index|
           begin
             self.excel_create_record(row,index,header_downcase,channel_name)
