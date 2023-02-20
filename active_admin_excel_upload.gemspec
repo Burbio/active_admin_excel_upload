@@ -15,6 +15,6 @@ Gem::Specification.new do |s|
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
-  s.add_dependency "coffee-rails"
+  # s.add_dependency "coffee-rails"
   s.add_dependency "roo", "~> 2.7.0"
 end
