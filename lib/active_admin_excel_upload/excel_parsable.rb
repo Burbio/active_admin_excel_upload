@@ -15,14 +15,13 @@ module ActiveAdminExcelUpload
         if record.save
           self.publish_to_channel(channel_name,"Successfully created record for #{row}, id: #{record.id}")
         else
-          puts row 
-          puts record.errors.messages
+          logger.info "Brian #{row}" 
+          logger.info record.errors.messages 
           self.publish_to_channel(channel_name,more_delightful_message(row,record.errors.messages))
         end
       end
 
       def more_delightful_message(row, messages)
-        byebug
         first_message = row.kind_of?(String) ? row : row.try(:[],0)
         error_messages = messages[:error].map{|k,v| "<p>#{k.to_s} #{v.to_s}</p>"}.join("").html_safe
         "<p>Could not create record for row #{first_message}.</p>".html_safe + error_messages
