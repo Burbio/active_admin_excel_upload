@@ -9,10 +9,10 @@ App.room = App.cable.subscriptions.create "ActiveAdminExcelUpload::ExcelChannel"
     # Called when there's incoming data on the websocket for this channel
     searchParams = new URLSearchParams(window.location.search);
     model = searchParams.get("model")
-    modelInMessage = data.message.match("\\[(\\w+\)]")[1]
+    modelInMessage = data.match("\\[(\\w+\)]")[1]
     if model == modelInMessage
       para = document.createElement("P");
-      t = document.createTextNode(data["message"].match("\\[(\\w+\)](.*)")[2]);
+      t = document.createTextNode(data.match("\\[(\\w+\)](.*)")[2]);
       para.appendChild(t);
       para.style.borderBottom = "1px solid lightgrey";
       para.style.margin = "0px";
